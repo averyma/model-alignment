@@ -36,7 +36,7 @@ Alignment for both models was performed using 2 GPUs to ensure sufficient comput
 - `src/utils*`: Utility scripts.
 - `options/default.yaml`: Default hyper-parameters.
 
-## Usage:
+## Usage
 ### Aligning Res50 using Res18 and evaluating transferability on VGG19 as the target model (single GPU):
 ```
 python3 main.py --output_dir <path to output files> --data_dir <path to the imagenet folder> \
