@@ -46,7 +46,7 @@ python3 main.py --output_dir <path to output files> --data_dir <path to the imag
 --lr 0.001 --save_modified_model 1 --eval_standard 0 --eval_whitebox 0 --eval_transfer 1
 ```
 
-### Aligning ViT-B/16 using ViT-T/16 and evaluating transferability on SWIN as the target model (Multiple GPU):
+### Aligning ViT-B/16 using ViT-T/16 and evaluating transferability on SWIN as the target model (multiple GPU):
 ```
 python3 main.py --output_dir <path to output files> --data_dir <path to the imagenet folder> \
 --source_arch vit_b_16 --source_dir <path to the source model> \
