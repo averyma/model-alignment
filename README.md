@@ -56,7 +56,7 @@ python3 main.py --output_dir <path to output files> --data_dir <path to the imag
 --dist-url "tcp://127.0.0.1:33967" --dist-backend 'nccl' --multiprocessing-distributed --world-size 1 --rank 0
 ```
 
-### Evaluate Only (by specifying ```--eval_arch```, ```--eval_dir```):
+### Evaluation-only mode (by specifying ```--eval_arch```, ```--eval_dir```):
 ```
 python3 main.py --output_dir <path to output files> --data_dir <path to the imagenet folder> \
 --eval_arch <source model architecture> --eval_dir <path to the source model> \
