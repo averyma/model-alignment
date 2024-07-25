@@ -60,8 +60,6 @@ def main_worker(gpu, ngpus_per_node, args):
     args.gpu = gpu
     device = torch.device('cuda:{}'.format(args.gpu))
 
-    assert (args.source_arch is None) != (args.eval_arch is None)
-
     if args.gpu is not None:
         print("Use GPU: {} for training".format(args.gpu))
 
@@ -231,38 +229,37 @@ def main_worker(gpu, ngpus_per_node, args):
         if is_main_task:
             print(' *  {}: {:.2f}\n *  {}: {:.2f}'.format('whitebox-err', whitebox_err1))
 
-    if args.distributed:
-        dist.barrier()
-
     # Load target model
-    target_model = get_model(args.target_arch)
-    ckpt = torch.load(args.target_dir, map_location=device)
-    try:
-        target_model.load_state_dict(ckpt)
-    except RuntimeError:
-        target_model.load_state_dict(remove_module(ckpt))
-    print('{}: Load target model from {}.'.format(device, args.target_dir))
-    target_model.cuda(args.gpu)
-    if args.distributed:
-        target_model = DDP(target_model, device_ids=[args.gpu])
-        dist.barrier()
-        val_sampler.set_epoch(27)
+    if args.eval_transfer:
+        if args.distributed:
+            dist.barrier()
+        target_model = get_model(args.target_arch)
+        ckpt = torch.load(args.target_dir, map_location=device)
+        try:
+            target_model.load_state_dict(ckpt)
+        except RuntimeError:
+            target_model.load_state_dict(remove_module(ckpt))
+        print('{}: Load target model from {}.'.format(device, args.target_dir))
+        target_model.cuda(args.gpu)
+        if args.distributed:
+            target_model = DDP(target_model, device_ids=[args.gpu])
+            dist.barrier()
+            val_sampler.set_epoch(27)
 
-    # Evaluate transferability (from source to target)
-    acc1_transfer = eval_transfer(test_loader_shuffle, source_model, target_model, args, is_main_task)
-    err1_transfer = 100.-acc1_transfer
-    result[args.target_arch] = err1_transfer
+        # Evaluate transferability (from source to target)
+        acc1_transfer = eval_transfer(test_loader_shuffle, source_model, target_model, args, is_main_task)
+        err1_transfer = 100.-acc1_transfer
+        result[args.target_arch] = err1_transfer
 
-    if args.distributed:
-        dist.barrier()
-    if is_main_task:
-        print(' *  {}: {:.2f}'.format(args.target_arch, err1_transfer))
+        if args.distributed:
+            dist.barrier()
+        if is_main_task:
+            print(' *  {}: {:.2f}'.format(args.target_arch, err1_transfer))
 ##########################################################
 ###################### Evaluation Ends ###################
 ##########################################################
         # Logging and checkpointing only at the main task (rank0)
-        print('result: {}'.format(result))
-
+    if is_main_task:
         for key in result.keys():
             if result[key] is not None:
                 logger.add_scalar(key, result[key], 1)

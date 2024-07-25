@@ -53,6 +53,10 @@ def parse_args():
                         default='str', required=True)
     parser.add_argument("--data_dir",
                         default='str', required=True)
+    parser.add_argument('--debug',
+                        default=False, type=distutils.util.strtobool)
+    parser.add_argument("--print_freq",
+                        default=argparse.SUPPRESS, type=int)
 
     # single-node multi-gpu setup
     parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
@@ -70,11 +74,6 @@ def parse_args():
                         'N processes per node, which has N GPUs. This is the '
                         'fastest way to use PyTorch for either single node or '
                         'multi node data parallel training')
-    parser.add_argument('--debug',
-                        default=False, type=distutils.util.strtobool)
-    parser.add_argument("--print_freq",
-                        default=argparse.SUPPRESS, type=int)
-
 
     # model alignment/misalignment
     parser.add_argument("--source_arch",
@@ -94,18 +93,22 @@ def parse_args():
     parser.add_argument("--eval_dir",
     			default=None, type=str)
     parser.add_argument('--eval_standard',
-                        default=False, type=distutils.util.strtobool)
+                default=False, type=distutils.util.strtobool)
     parser.add_argument('--eval_whitebox',
-                        default=False, type=distutils.util.strtobool)
+                default=False, type=distutils.util.strtobool)
+    parser.add_argument('--eval_transfer',
+                default=True, type=distutils.util.strtobool)
 
+    # attack parameters
     parser.add_argument("--pgd_itr",
-                            default=20, type=int)
+                default=20, type=int)
     parser.add_argument("--pgd_eps",
-                            default=4./255., type=float)
+                default=4./255., type=float)
     parser.add_argument("--pgd_alpha",
-                            default=1./255., type=float)
+                default=1./255., type=float)
     parser.add_argument("--atk",
-                            default='pgd', type=str)
+                default='pgd', type=str,
+                choices=['pgd', 'mi', 'ni', 'vni', 'vmi', 'sini', 'ti', 'di'])
 
     args = parser.parse_args()
 
