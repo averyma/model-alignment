@@ -22,14 +22,14 @@ To run the code, the following packages are needed:
 - timm 1.0.3
 
 ## Checkpoints
-For reproducibility and to facilitate future research on model alignment, we provide checkpoints for several models, including ResNet18, ResNet50, ViT-T/16, and ViT-B/16. Each model is initialized and trained with different seeds, resulting in a total of 9 unique, unaligned (vanilla) model checkpoints.
+For reproducibility and to facilitate future research on model alignment, we provide checkpoints for several models, including ResNet18, ResNet50, ViT-T/16, and ViT-B/16. Each model is initialized and [trained](https://github.com/pytorch/vision/tree/main/references/classification) with different seeds, resulting in a total of 9 unique, unaligned (vanilla) model checkpoints. One possible scenario for using these checkpoints is to align ResNet50(seed0) using ResNet50(seed1) and evaluate transferability using ResNet50(seed2).
 
-We also provide two aligned model checkpoints for specific configurations:
+We also provide checkpoints for two aligned models:
 
-```aligned_res50.pt```: ResNet50 aligned with ResNet18 for 1 epoch using ```--batchsize 128 --lr 0.001```.  
-```aligned_vit_b_16.pt```: ViT-B/16 aligned with ViT-T/16 for 1 epoch using ```--batchsize 512 --lr 0.1 --clip_grad_norm 1.0```.
+```aligned_res50.pt```: ResNet50 aligned with ResNet18 using ```--batchsize 128 --lr 0.001```.  
+```aligned_vit_b_16.pt```: ViT-B/16 aligned with ViT-T/16 using ```--batchsize 512 --lr 0.1 --clip_grad_norm 1.0```.
 
-Alignment for both models was performed using 2 GPUs to ensure sufficient computational resources. You can access all the model checkpoints [here](https://drive.google.com/drive/folders/1uQTl4Lncd8gBi0naj9LUdTEdHXj3op5o?usp=sharing).
+Both models were aligned for 1 epoch using 2 GPUs. You can access all the model checkpoints [here](https://drive.google.com/drive/folders/1uQTl4Lncd8gBi0naj9LUdTEdHXj3op5o?usp=sharing).
 
 ## Project Structure
 - `src/align.py`: Implementation of model alignment.
